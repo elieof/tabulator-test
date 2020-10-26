@@ -21,7 +21,9 @@ export class AppComponent {
 
   childrenCount = 500;
   rowsSize = 20;
-  columnsSize = 10;
+  columnsSize = 2;
+  columnLevel = 2;
+  columnChldrenCount = 10;
   loading = false;
 
   constructor(
@@ -84,9 +86,18 @@ export class AppComponent {
     this.frozenCols = [{ field: "name", header: "Name" }];
 
     // this.primengConfig.ripple = true;
+  }
+
+  clear() {
+    this.table.setData([]);
+  }
+
+  displayTable() {
+    // this.loading = true;
+    // this.table.setData(this.files);
     this.table = new Tabulator("#tabulatorId", {
-      // data: this.files,
-      // virtualDomHoz: true,
+      data: this.files,
+      virtualDomHoz: true,
       columns: this.columns,
       // layout: 'fitData',
       height: 400,
@@ -101,27 +112,24 @@ export class AppComponent {
     });
   }
 
-  clear() {
-    this.table.setData([]);
-  }
-
-  displayTable() {
-    // this.loading = true;
-    this.table.setData(this.files);
-  }
-  getColumns(index: number): any[] {
+  getColumns(index: number, level: number = 0): any[] {
     const columns = [];
     for (let cin: number = 0; cin < index; cin++) {
-      columns.push({ field: "data.size" + cin, title: "Size" + cin });
+      columns.push({ field: "data.size" + cin, title: `Size_${level}_${cin}` });
     }
     return columns;
   }
-  fillChildren(columns: any[], index: number) {
-    const children = this.getColumns(this.columnsSize);
+
+  fillChildren(columns: any[], index: number, count: number = 5) {
+    const children = this.getColumns(count);
     for (let i = 0; i < columns.length; i++) {
       columns[i].columns = children;
       if (index > 0) {
-        this.fillChildren(columns[i].columns, index - 1);
+        this.fillChildren(
+          columns[i].columns,
+          index - 1,
+          this.columnChldrenCount
+        );
       }
     }
   }
