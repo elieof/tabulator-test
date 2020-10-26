@@ -1,0 +1,34 @@
+<!-- <p-treeTable [value]="files" [columns]="cols" [frozenColumns]="frozenCols" [scrollable]="true" scrollHeight="200px" frozenWidth="200px">
+    <ng-template pTemplate="colgroup" let-columns>
+        <colgroup>
+            <col *ngFor="let col of columns" style="width:50px">
+        </colgroup>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th *ngFor="let col of columns">
+                {{col.header}}
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData="rowData" let-columns="columns">
+        <tr style="height: 57px">
+            <td *ngFor="let col of columns; let i = index">
+                {{rowData[col.field]}}
+            </td>
+        </tr>            
+    </ng-template>
+    <ng-template pTemplate="frozenbody" let-rowNode let-rowData="rowData">
+        <tr style="height: 57px">
+            <td>
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                {{rowData.name}}
+            </td>
+        </tr>            
+    </ng-template>
+</p-treeTable> -->
+<p-button label="Compute" (onClick)="displayTable()"></p-button>
+<p-button label="Clear" (onClick)="clear()"></p-button>
+
+<div id="tabulatorId"></div>
+<!-- <p-progressSpinner *ngIf="loading" [style]="{width: '50px', height: '50px'}" styleClass="custom-spinner" strokeWidth="8" fill="#EEEEEE" animationDuration=".5s"></p-progressSpinner> -->
