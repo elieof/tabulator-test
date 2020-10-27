@@ -19,10 +19,10 @@ export class AppComponent {
   rowsNumber: number = 2;
   table: Tabulator;
 
-  childrenCount = 500;
-  rowsSize = 20;
-  columnsSize = 2;
-  columnLevel = 2;
+  childrenCount = 1;
+  rowsSize = 1;
+  columnsSize = 1;
+  columnLevel = 3;
   columnChldrenCount = 10;
   loading = false;
 
@@ -47,20 +47,22 @@ export class AppComponent {
         children: []
       };
 
-      for (let xx: number = 0; xx < this.columnsSize; xx++) {
-        node.data["size" + xx] = Math.floor(Math.random() * 1000) + 1 + "kb";
-      }
+      // for (let xx: number = 0; xx < this.columnsSize; xx++) {
+      //   node.data["size" + xx] = Math.floor(Math.random() * 1000) + 1 + "kb";
+      // }
 
       for (let j = 0; j < this.childrenCount; j++) {
         const ch = {
           data: {
+            id: i + "_" + j,
             name: "Item " + j + " - 0",
             type: "Type " + i
           }
         };
 
-        for (let cc: number = 0; cc < this.columnsSize; cc++) {
-          ch.data["size" + cc] = Math.floor(Math.random() * 1000) + 1 + "kb";
+        for (let cc: number = 0; cc < this.columnChldrenCount; cc++) {
+          ch.data[`size_${this.columnLevel}_${cc}`] =
+            Math.floor(Math.random() * 1000) + 1 + "kb";
         }
 
         node.children.push(ch);
@@ -81,7 +83,7 @@ export class AppComponent {
     // this.cols.push({ field: 'data.name', header: 'Name' });
     // this.cols.push({ field: "data.type", header: "Type" });
     let columns = this.getColumns(this.columnsSize);
-    this.fillChildren(columns, 1);
+    this.fillChildren(columns, this.columnLevel);
     this.columns = this.columns.concat(columns);
     this.frozenCols = [{ field: "name", header: "Name" }];
 
@@ -89,7 +91,7 @@ export class AppComponent {
   }
 
   clear() {
-    this.table.setData([]);
+    this.table = {};
   }
 
   displayTable() {
@@ -100,12 +102,12 @@ export class AppComponent {
       virtualDomHoz: true,
       columns: this.columns,
       // layout: 'fitData',
-      height: 400,
+      maxHeight: 400,
+      index: 'data.id',
+      autoResize: true,
       dataTree: true,
       dataTreeChildField: "children",
       dataTreeStartExpanded: true,
-      pagination: "local",
-      paginationSize: this.childrenCount + 1
       // tableBuilding: () => (this.loading = true),
       // tableBuilt: () => (this.loading = false),
       // virtualDomBuffer: 400
@@ -115,16 +117,19 @@ export class AppComponent {
   getColumns(index: number, level: number = 0): any[] {
     const columns = [];
     for (let cin: number = 0; cin < index; cin++) {
-      columns.push({ field: "data.size" + cin, title: `Size_${level}_${cin}` });
+      columns.push({
+        field: `data.size_${level}_${cin}`,
+        title: `Size_${level}_${cin}`
+      });
     }
     return columns;
   }
 
   fillChildren(columns: any[], index: number, count: number = 5) {
-    const children = this.getColumns(count);
-    for (let i = 0; i < columns.length; i++) {
-      columns[i].columns = children;
-      if (index > 0) {
+    if (index > 0) {
+      const children = this.getColumns(count, this.columnLevel - index + 1);
+      for (let i = 0; i < columns.length; i++) {
+        columns[i].columns = children;
         this.fillChildren(
           columns[i].columns,
           index - 1,
@@ -132,5 +137,13 @@ export class AppComponent {
         );
       }
     }
+  }
+
+  getColumnsSize(): number {
+    return (
+      5 *
+      this.columnsSize *
+      Math.pow(this.columnChldrenCount, this.columnLevel - 1)
+    );
   }
 }

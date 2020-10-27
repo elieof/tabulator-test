@@ -27,7 +27,7 @@
         </tr>            
     </ng-template>
 </p-treeTable> -->
-<span> Columns number : {{5 * columnsSize * (columnLevel -1) * columnChldrenCount}}
+<span> Columns number : {{getColumnsSize()}} </span>
 <p-button label="Compute" (onClick)="displayTable()"></p-button>
 <p-button label="Clear" (onClick)="clear()"></p-button>
 
